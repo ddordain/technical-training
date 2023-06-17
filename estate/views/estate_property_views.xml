@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
+    <!-- Custom Search View -->
+  <record id="view_estate_property_search" model="ir.ui.view">
+    <field name="name">estate.property.search</field>
+    <field name="model">estate.property</field>
+    <field name="arch" type="xml">
+      <search>
+          <field name="name" string="Title"/>
+          <field name="postcode"/>
+          <field name="bedrooms"/>
+          <field name="living_area" string="Living Area (sqm)"/>
+          <field name="expected_price" class="underline-input"/>
+          <field name="facades"/>
+      </search>
+    </field>
+  </record>
+
+
     <!-- Custom Tree View -->
   <record id="view_estate_property_tree" model="ir.ui.view">
     <field name="name">estate.property.tree</field>
@@ -8,6 +25,12 @@
     <field name="arch" type="xml">
       <tree>
           <field name="name" string="Title"/>
+          <field name="postcode"/>
+          <field name="bedrooms"/>
+          <field name="living_area" string="Living Area (sqm)"/>
+          <field name="expected_price" class="underline-input"/>
+          <field name="selling_price"/>
+          <field name="date_availability" string="Available From"/>
       </tree>
     </field>
   </record>
@@ -18,45 +41,35 @@
     <field name="model">estate.property</field>
     <field name="arch" type="xml">
       <form>
-        <!-- Inline CSS -->
-        <div style="display:none;">
-          <style type="text/css">
-              .underline-input {
-                  border-bottom: 1px solid black;
-              }
-          </style>
-        </div>
-          <sheet>
-          <group col="2">
-            <group>
-              <field name="name" string="Title " class="underline-input"/>
-            </group>
-            <group colspan="2">
-              <field name="description"/>
-            </group>
-          </group>
+        <sheet>
+          <h1>
+            <field name="name"/>
+          </h1>
           <group>
             <group>
-                <field name="postcode"/>
-                <field name="expected_price" class="underline-input"/>
+              <field name="postcode"/>
+              <field name="date_availability" string="Available From"/>
+            </group>
+            <group>
+              <field name="expected_price" class="underline-input"/>
+              <field name="selling_price"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Description">
+              <group>
+                <field name="description"/>
                 <field name="bedrooms"/>
-                <field name="facades"/>
-                <field name="garden"/>
-                <field name="garden_orientation"/>
-            </group>
-            <group>
-                <field name="date_availability" string="Available From"/>
-                <field name="selling_price"/>
                 <field name="living_area" string="Living Area (sqm)"/>
+                <field name="facades"/>
                 <field name="garage"/>
+                <field name="garden"/>
                 <field name="garden_area" string="Garden Area (sqm)"/>
-            </group>
-            </group>
-            <group>
-              <field name="active"/>
-              <field name="state"/>
-            </group>
-          </sheet>
+                <field name="garden_orientation"/>
+              </group>
+            </page>
+          </notebook>
+        </sheet>
       </form>
     </field>
   </record>
@@ -64,6 +77,6 @@
   <record id="estate_property_model_action" model="ir.actions.act_window">
     <field name="name">Properties</field>
     <field name="res_model">estate.property</field>
-    <field name="view_mode">tree,form</field>
+    <field name="view_mode">tree,form,search</field>
   </record>
 </odoo>
