@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 
 class EstateProperty(models.Model):
     _name = "estate.property" # . translated in _ in postgres 
@@ -57,9 +58,23 @@ class EstateProperty(models.Model):
 
     @api.onchange('garden')
     def _onchange_garden(self):
-        if self.garden is True:
+        if self.garden:
             self.garden_area = 10
             self.garden_orientation = 'North'
         else:
             self.garden_area = 0
             self.garden_orientation = False
+
+    def action_cancel(self):
+        if self.state == 'Sold':
+            raise UserError("Sold properties cannot be canceled") 
+        else:
+            self.state = 'Canceled'
+        return True
+
+    def action_sold(self):
+        if self.state == 'Canceled':
+            raise UserError("Canceled properties cannot be sold")
+        else:
+            self.state = 'Sold'
+        return True
