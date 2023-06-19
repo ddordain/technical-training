@@ -4,6 +4,9 @@ from odoo.exceptions import UserError
 class EstatePropertyOffer(models.Model):
     _name = "estate.property.offer"
     _description = "Estate property offer"
+    _sql_constraints = [
+        ("check_price", "CHECK(price > 0)", "Offer price must be strictly positive"),
+    ]
 
     price = fields.Float()
     status = fields.Selection(selection=[('accepted', 'Accepted'),
@@ -15,7 +18,6 @@ class EstatePropertyOffer(models.Model):
     create_date = fields.Date(default=lambda self: fields.Datetime.today())
     validity = fields.Integer(default=7, store=True)
     date_deadline = fields.Date(compute='_compute_date_deadline', inverse='_inverse_date_deadline', store=True)
-   # store=True otherwise the data are not good in the DB??? 
 
     @api.depends('create_date', 'validity')
     def _compute_date_deadline(self):
@@ -45,5 +47,7 @@ class EstatePropertyOffer(models.Model):
         return True
 
     def action_refuse(self):
+        if self.status == 'accepted':
+           self.property_id.selling_price = 0 
         self.status = 'refused'
         return True
