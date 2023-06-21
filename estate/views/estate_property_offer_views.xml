@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <odoo>
 
-  <!-- Custom Tree View USELESS ???????????????????????????? -->
+  <!-- Custom Tree View ???????????? -->
   <record id="view_estate_property_offer_tree" model="ir.ui.view">
     <field name="name">estate.property.offer.tree</field>
     <field name="model">estate.property.offer</field>
     <field name="arch" type="xml">
-      <tree>
+      <tree decoration-success="status=='accepted'" decoration-danger="status=='refused'">
           <field name="price"/>
           <field name="partner_id"/>
           <field name="status"/>
@@ -33,4 +33,10 @@
     </field>
   </record>
 
+  <record id="estate_property_offer_action" model="ir.actions.act_window">
+    <field name="name">Property Tag</field>
+    <field name="res_model">estate.property.tag</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('property_type_id', '=', active_id)]</field>
+  </record>
 </odoo>

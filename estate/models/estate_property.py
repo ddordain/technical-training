@@ -9,6 +9,7 @@ class EstateProperty(models.Model):
         ("check_expected_price", "CHECK(expected_price > 0)", "Expected price must be strictly positive"),
         ("check_selling_price", "CHECK(selling_price >= 0)", "Selling price must be positive"),
     ]
+    _order = "id desc"
 
     name = fields.Char(required=True, default="Unknown") # VARCHAR
     description = fields.Text() # TEXT
@@ -28,15 +29,16 @@ class EstateProperty(models.Model):
     total_area = fields.Integer(compute='_compute_total_area')
     best_offer = fields.Integer(compute='_compute_best_price')
 
-    active = fields.Boolean()
+    #test to make everything visible by default
+    active = fields.Boolean(default=True)
 
     state = fields.Selection(
-        default="New",
-        selection=[('New', 'New'),
-                   ('Offer Received', 'Offer Received'),
-                   ('Offer Accepted', 'Offer Accepted'),
-                   ('Sold', 'Sold'),
-                   ('Canceled', 'Canceled')])
+        default="new",
+        selection=[('new', 'New'),
+                   ('offer_received', 'Offer Received'),
+                   ('offer_accepted', 'Offer Accepted'),
+                   ('sold', 'Sold'),
+                   ('canceled', 'Canceled')])
 
     property_type_id = fields.Many2one("estate.property.type", string="Type")
     buyer_id = fields.Many2one("res.partner", string="Buyer", copy=False)
@@ -71,17 +73,17 @@ class EstateProperty(models.Model):
             self.garden_orientation = False
 
     def action_cancel(self):
-        if self.state == 'Sold':
+        if self.state == 'sold':
             raise UserError("Sold properties cannot be canceled") 
         else:
-            self.state = 'Canceled'
+            self.state = 'canceled'
         return True
 
     def action_sold(self):
-        if self.state == 'Canceled':
+        if self.state == 'canceled':
             raise UserError("Canceled properties cannot be sold")
         else:
-            self.state = 'Sold'
+            self.state = 'sold'
         return True
 
     @api.constrains('selling_price')

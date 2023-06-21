@@ -7,6 +7,7 @@ class EstatePropertyOffer(models.Model):
     _sql_constraints = [
         ("check_price", "CHECK(price > 0)", "Offer price must be strictly positive"),
     ]
+    _order = "price desc"
 
     price = fields.Float()
     status = fields.Selection(selection=[('accepted', 'Accepted'),
@@ -44,10 +45,24 @@ class EstatePropertyOffer(models.Model):
         self.status = 'accepted'
         self.property_id.buyer_id = self.partner_id
         self.property_id.selling_price = self.price
+        self.property_id.state = 'offer_accepted'
         return True
 
     def action_refuse(self):
         if self.status == 'accepted':
            self.property_id.selling_price = 0 
         self.status = 'refused'
+        self.property_id.state = 'offer_received'
         return True
+
+    # override create method to change state property
+    # BATCH WARNING 
+    @api.model
+    def create(self, vals):
+        offer = super(EstatePropertyOffer, self).create(vals)
+        if offer.property_id:
+            if offer.property_id.state == 'new':
+                offer.property_id.state = 'offer_received'
+        return offer
+
+    property_type_id = fields.Many2one("estate.property.type", related="property_id.property_type_id", string="Property type", store=True)
