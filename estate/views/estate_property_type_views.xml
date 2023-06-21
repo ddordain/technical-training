@@ -23,6 +23,11 @@
             <field name="name"/>
             <field name="offer_count"/>
           </h1>
+          <div class="oe_button_box" name="button_box">
+              <button name="action_show_offers" type="object" class="oe_stat_button" icon="fa-usd">
+                  <field name="offer_count" widget="statinfo" string="Offers"/>
+              </button>
+          </div>
           <field name="property_ids">
             <tree>
               <field name="name"/>

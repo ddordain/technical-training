@@ -49,10 +49,7 @@ class EstatePropertyOffer(models.Model):
         return True
 
     def action_refuse(self):
-        if self.status == 'accepted':
-           self.property_id.selling_price = 0 
         self.status = 'refused'
-        self.property_id.state = 'offer_received'
         return True
 
     # override create method to change state property

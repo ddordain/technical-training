@@ -2,7 +2,7 @@
 <odoo>
 
   <!-- Custom Tree View ???????????? -->
-  <record id="view_estate_property_offer_tree" model="ir.ui.view">
+  <record id="estate_property_offer_view_tree" model="ir.ui.view">
     <field name="name">estate.property.offer.tree</field>
     <field name="model">estate.property.offer</field>
     <field name="arch" type="xml">
@@ -15,7 +15,7 @@
   </record>
 
   <!-- Custom Form View -->
-  <record id="view_estate_property_offer_form" model="ir.ui.view">
+  <record id="estate_property_offer_view_form" model="ir.ui.view">
     <field name="name">estate.property.offer.form</field>
     <field name="model">estate.property.offer</field>
     <field name="arch" type="xml">
@@ -34,9 +34,15 @@
   </record>
 
   <record id="estate_property_offer_action" model="ir.actions.act_window">
-    <field name="name">Property Tag</field>
-    <field name="res_model">estate.property.tag</field>
+    <field name="name">Property Offers</field>
+    <field name="res_model">estate.property.offer</field>
     <field name="view_mode">tree,form</field>
     <field name="domain">[('property_type_id', '=', active_id)]</field>
+  </record>
+
+  <record id="action_show_offer" model="ir.actions.act_window">
+    <field name="name">Property Offers</field>
+    <field name="res_model">estate.property.offer</field>
+    <field name="view_mode">tree</field>
   </record>
 </odoo>

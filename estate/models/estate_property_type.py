@@ -18,8 +18,14 @@ class EstatePropertyType(models.Model):
 
     offer_count = fields.Integer(compute="_compute_offer_count", store=True)
 
-    @api.depends("property_ids")
+    # compute on the fly ? why i dont match 
+    @api.depends("property_ids", "offer_ids")
     def _compute_offer_count(self):
         offer_list = self.env["estate.property.offer"]
         for record in self:
             record.offer_count = offer_list.search_count([("property_type_id", "=", record.id)])
+
+    def action_show_offers(self):
+        action = self.env.ref('estate.action_show_offer').read()[0]
+        action['domain'] = [('property_type_id', '=', self.id)]
+        return action
