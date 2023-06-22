@@ -52,14 +52,19 @@ class EstatePropertyOffer(models.Model):
         self.status = 'refused'
         return True
 
+    property_type_id = fields.Many2one("estate.property.type", related="property_id.property_type_id", string="Property type", store=True)
+
     # override create method to change state property
     # BATCH WARNING 
     @api.model
     def create(self, vals):
-        offer = super(EstatePropertyOffer, self).create(vals)
-        if offer.property_id:
-            if offer.property_id.state == 'new':
-                offer.property_id.state = 'offer_received'
+        property_id = vals.get('property_id')
+        price_new_offer = vals.get('price')
+        property = self.env['estate.property'].browse(property_id)
+        if property.best_offer is not None:
+            if float_compare(property.best_offer,price_new_offer, precision_digits=2) <= 0:
+                raise UserError("Price should be higher than previous offers")
+        offer = super().create(vals)
+        if property.state == 'new':
+            property.state = 'offer_received'
         return offer
-
-    property_type_id = fields.Many2one("estate.property.type", related="property_id.property_type_id", string="Property type", store=True)
