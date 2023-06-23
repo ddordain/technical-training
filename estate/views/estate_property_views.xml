@@ -104,33 +104,43 @@
     </field>
   </record>
 
-  <!-- Custom Kanban View -->
+
+<!-- Custom Kanban View -->
 <record id="estate_property_view_kanban" model="ir.ui.view">
     <field name="name">estate.property.kanban</field>
     <field name="model">estate.property</field>
     <field name="arch" type="xml">
-      <kanban>
+      <kanban default_group_by="property_type_id" records_draggable="False">
         <templates>
           <t t-name="kanban-box">
-            <h1>
-              <div class="oe_kanban_global_click">
+            <div class="oe_kanban_global_click">
+              <h1 class="o_kanban_record_title">
                 <field name="name"/> 
+                <field name="state" invisible="True"/>
+              </h1>
+              <div>
+                Expected Price: <field name="expected_price"/>
               </div>
-            </h1>
-            <group> 
-              Expected Price: <field name="expected_price"/>
-            </group>
-            <group> 
-              Best Offer: <field name="best_offer"/>
-            </group>
-            <group> 
-              Selling Price: <field name="selling_price"/>
-            </group>
+              <t t-if="record.state.raw_value == 'offer_received'">
+                <div>
+                  Best Offer: <field name="best_offer"/>
+                </div>
+              </t>
+              <t t-if="record.state.raw_value == 'sold' or record.state.raw_value == 'offer_accepted'">
+                <div>
+                  Selling Price: <field name="selling_price"/>
+                </div>
+              </t>
+              <div>
+                <field name="tags_id" widget="many2many_tags" options="{'color_field': 'color'}"/>
+              </div>
+            </div>
           </t>
         </templates>
       </kanban>
     </field>
 </record>
+
 
   <record id="estate_property_action" model="ir.actions.act_window">
       <field name="name">Properties</field>
